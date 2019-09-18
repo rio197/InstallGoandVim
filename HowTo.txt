@@ -1,0 +1,62 @@
+# Find the Go installer link:
+# https://golang.org/dl/
+
+# Untar the Go installer:
+sudo su -
+cd /tmp
+curl -O https://dl.google.com/go/go1.13.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.13.linux-amd64.tar.gz
+exit
+
+# Prepare the environment variables
+echo 'export GOPATH=$HOME/go' >> ~/.bashrc                                                                                                                                                                   
+echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> ~/.bashrc
+
+# Create the Go source and bin directories:
+mkdir -p $HOME/go/{bin,src}
+
+# Install git:
+sudo yum install -y git
+
+# Prepare to install vim-go:
+sudo yum autoremove -y vim
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y python36
+git clone https://github.com/vim/vim.git
+cd vim/src
+make -j8
+sudo make install
+sudo cp vim /usr/bin/
+cd ~
+
+# Install vim-plug package manager
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# Modify ~/.vimrc to use the package manager to install vim-go.
+cat << "EOF" >> ~/.vimrc
+call plug#begin('~/.vim/plugged')
+
+Plug 'fatih/vim-go'
+
+call plug#end()
+
+filetype off
+filetype plugin indent on
+
+set number
+set noswapfile
+set noshowmode
+set ts=2 sw=2 sts=2 et
+set backspace=indent,eol,start
+
+" Map <leader> to comma
+let mapleader=","
+
+if has("autocmd")
+  autocmd FileType go set ts=2 sw=2 sts=2 noet nolist autowrite
+endif
+EOF
+
+# Install vim-go
+vim +PlugInstall +qa
+vim +GoInstallBinaries +qa
