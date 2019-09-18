@@ -1,2 +1,2 @@
 # InstallGoandVim
-Install Go and Vim
+How to Install Go and Vim
