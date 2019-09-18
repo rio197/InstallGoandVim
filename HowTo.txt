@@ -1,4 +1,4 @@
-# Find the Go installer link:
+# Find the Go installer link to feed into the curl command:
 # https://golang.org/dl/
 
 # Untar the Go installer:
